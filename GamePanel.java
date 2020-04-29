@@ -18,7 +18,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 	Ball[] balls;
 	static Vector<Ball> ballList = new Vector<Ball>(); 
 	int middleLine, ballsToAdd = 4;
-	public static boolean doorIsClosed = true;
+	public static boolean doorIsClosed = true, ballsExist = false;
 
 	double deltat = 0.1;
 	
@@ -35,7 +35,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 	public void actionPerformed(ActionEvent e) {
 		if ( e.getSource()==timer ) { moveAll(); }
 		repaint();
-
 	}
 	
 	@Override
@@ -54,6 +53,17 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 		g.drawLine(w/2, 0, w/2, 250);
 		g.drawLine(w/2, 400, w/2, h);
 		
+		//temperature displays
+		g.drawRect(0, 0, 400, 25);
+		g.drawRect(400, 0, 400, 25);
+		g.drawString("BLUE Temperature: ", 5, 40);
+		g.drawString("RED Temperature: ", 405, 40);
+		g.drawLine(0, 45, 800, 45);
+		
+		if(ballsExist) {
+			drawTemperature(g);
+		}
+		
 		//door
 		if( doorIsClosed==true ) {
 			g.setColor(Color.GREEN);
@@ -71,9 +81,50 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 		for ( int i=0; i<ballCount; i++ ) { ballList.elementAt(i).move(deltat); }
 	}
 	
+	public void drawTemperature( Graphics g ) {
+		double tempx;
+		int leftBalls = 0, rightBalls = 0;
+		int tempLeft = 0, tempRight = 0;
+
+		for ( int i=0; i<ballCount; i++ ) { 
+			
+			tempx = ballList.elementAt(i).x;
+			
+			if(tempx < 400) {
+				leftBalls++;
+				if(ballList.elementAt(i).color == "blue") {
+					tempLeft = (tempLeft + 30)/leftBalls;
+				}
+				else if(ballList.elementAt(i).color == "red") {
+					tempLeft = (tempLeft + 70)/leftBalls;
+				}
+				g.setColor(Color.ORANGE);
+				g.fillRect(0, 0, tempLeft, 25);
+			}
+			else if(tempx > 400) {
+				rightBalls++;
+				if(ballList.elementAt(i).color == "blue") {
+					tempRight = (tempRight + 30)/rightBalls;
+				}
+				else if(ballList.elementAt(i).color == "red") {
+					tempRight = (tempRight + 70)/rightBalls;
+				}
+				g.setColor(Color.ORANGE);
+				g.fillRect(400, 0, tempRight, 25);
+			}
+		}
+		g.setColor(Color.BLACK);
+		g.drawString(Integer.toString(tempLeft) + " degrees Maximus", 130, 40);
+		g.drawString(Integer.toString(tempRight)+ " degrees Maximus", 525, 40);
+
+		
+	}//end drawTemperature()
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		doorIsClosed = false;
+		System.out.println(e.getX() + ", " + e.getY());
+
 	}
 
 	@Override
@@ -103,17 +154,17 @@ class Ball extends JComponent implements ActionListener {
 	{
 		if(color.equals("blue")) {
 			this.color = "blue";
-			x = Math.random() * 400 + 100;
-			y = Math.random() * 400 + 100;
-			vx = .7 * 100 - 50;
-			vy = .7 * 100 - 50;
+			x = Math.random() * (500-300) + 300;
+			y = Math.random() * (500-300) + 300;
+			vx = 20;
+			vy = 20;
 		}
 		else if(color.equals("red")) {
 			this.color = "red";
-			x = Math.random() * 400 + 100;
-			y = Math.random() * 400 + 100;
-			vx = .8 * 150 - 50;
-			vy = .8 * 150 - 50;
+			x = Math.random() * (500-300) + 300;
+			y = Math.random() * (500-300) + 300;
+			vx = 30;
+			vy = 30;
 		}
 	}//end Ball(Sting) constructor
 	
@@ -124,22 +175,22 @@ class Ball extends JComponent implements ActionListener {
 		timer.restart();
 		if(color.equals("blue") ) {
 			this.color = "blue";
-			vx = .7 * 100 - 50;
-			vy = .7 * 100 - 50;
+			vx = 20;
+			vy = 20;
 		}
 		else if(color.equals("red")) {
 			this.color = "red";
-			vx = .8 * 125 - 50;
-			vy = .8 * 125 - 50;
+			vx = 30;
+			vy = 30;
 		}
 		
 		if(toTheRight==true) {
 			x = Math.random() * (750-450) + 450;
-			y = Math.random() * (750-150) + 150;
+			y = Math.random() * (600-100) + 100;
 		}
 		else if(toTheRight==false) {
 			x = Math.random() * (350-25) + 25;
-			y = Math.random() * (750-150) + 150;
+			y = Math.random() * (600-100) + 100;
 		}
 	}//end Balls(String, boolean) constructor
 	
@@ -170,7 +221,7 @@ class Ball extends JComponent implements ActionListener {
 		}
 		
 		if ( x<0 ) { vx *= -1; }
-		if ( y<0 ) { vy *= -1; }
+		if ( y<48 ) { vy *= -1; }
 		if ( x>794 ) { vx *= -1; }
 		if ( y>670 ) { vy *= -1; }
 		

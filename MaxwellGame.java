@@ -29,8 +29,8 @@ public class MaxwellGame extends JFrame {
 	    setResizable(false);
 	    setVisible( true ); 
 	    
-	    int resolution = Toolkit.getDefaultToolkit().getScreenResolution();
-	    System.out.println(resolution);
+	    //int resolution = Toolkit.getDefaultToolkit().getScreenResolution();
+	    //System.out.println(resolution);
 
 	}//end MaxwellGame() constructor
 	

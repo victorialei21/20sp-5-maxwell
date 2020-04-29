@@ -9,8 +9,6 @@ public class MenuPanel extends JPanel implements ActionListener {
 	JButton instructions = new JButton("How To Play");
 	JButton reset = new JButton("Reset Game");
 	JButton moreBalls = new JButton("Add More Particles");
-	JProgressBar leftTemp = new JProgressBar();
-	JProgressBar rightTemp = new JProgressBar();
 	
 	int ballsToAdd = 4;
 	
@@ -21,24 +19,11 @@ public class MenuPanel extends JPanel implements ActionListener {
 		setPreferredSize(size);
 		
 		setBorder(BorderFactory.createTitledBorder("Menu"));
-		setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		setLayout(new FlowLayout());
 		
-		c.gridx = 0;
-		c.gridy = 0;
-		add(moreBalls, c);
-		
-		c.gridx = 4;
-		c.gridy = 0;
-		add(reset, c);
-		
-		c.gridx = 0;
-		c.gridy = 2;
-		add(leftTemp, c);
-		
-		c.gridx = 4;
-		c.gridy = 2;
-		add(rightTemp, c);
+
+		add(moreBalls);
+		add(reset);
 		
 		reset.addActionListener(this);
 		moreBalls.addActionListener(this);
@@ -75,5 +60,8 @@ public class MenuPanel extends JPanel implements ActionListener {
 			
 			for(int i = 0; i < ballsToAdd; i++) { GamePanel.ballCount++; }
 			
+			if(GamePanel.ballCount >= 1) { GamePanel.ballsExist = true; }
+			else { GamePanel.ballsExist = false; }
+						
 	}//end moreBalls()
 }//end MenuPanel class
