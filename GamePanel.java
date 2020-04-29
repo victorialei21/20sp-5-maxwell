@@ -14,7 +14,7 @@ import javax.swing.Timer;
 public class GamePanel extends JPanel implements ActionListener, MouseListener {
 
 	Timer timer;
-	int ballCount;
+	static int ballCount;
 	Ball[] balls;
 	static Vector<Ball> ballList = new Vector<Ball>(); 
 	int middleLine, ballsToAdd = 4;
@@ -23,16 +23,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 	double deltat = 0.1;
 	
 	public GamePanel() {
-		ballCount = 10;
-		balls = new Ball[100000];
 		
 		timer = new Timer((int)(1000 * deltat), this);
 		timer.start();
-		
-		for ( int i=0; i<ballCount; i++ ) { 
-			//balls[i] = new Balls(); 
-			ballList.addElement(new Ball());
-		}
 		
 		addMouseListener(this);
 
@@ -41,7 +34,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if ( e.getSource()==timer ) { moveAll(); }
-
 		repaint();
 
 	}
@@ -49,6 +41,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 	@Override
 	public void paint( Graphics g )
 	{
+		super.paint(g);
+		
 		//background
 		g.setColor( Color.WHITE );
 		int w = getWidth();  
@@ -61,11 +55,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 		g.drawLine(w/2, 400, w/2, h);
 		
 		//door
-		g.setColor(Color.BLUE);
-		g.drawLine(w/2, 250, w/2, 400);
+		if( doorIsClosed==true ) {
+			g.setColor(Color.GREEN);
+			g.drawLine(w/2, 250, w/2, 400);
+		}
 		
-		for ( int i=0; i<ballCount; i = i + 2 ) { ballList.elementAt(i).drawBlue(g); }
-		for ( int i=1; i<ballCount; i = i + 2 ) { ballList.elementAt(i).drawRed(g); }
+		for ( int i=0; i<ballCount; i++ ) { 
+			if(ballList.elementAt(i).color.equals("blue")) {ballList.elementAt(i).drawBlue(g); }
+			if(ballList.elementAt(i).color.equals("red")) {ballList.elementAt(i).drawRed(g); }
+		}
 
 	}
 	
@@ -73,36 +71,20 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 		for ( int i=0; i<ballCount; i++ ) { ballList.elementAt(i).move(deltat); }
 	}
 	
-	public void addBalls() {
-		for ( int i=0; i<ballsToAdd; i++ ) { 
-			ballList.addElement(new Ball());
-		}
-	}//end addBalls()
-	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		doorIsClosed = false;
-		slideDoorUp();
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		slideDoorDown();
-		
+		doorIsClosed = true;		
 	}
 
 	@Override public void mouseClicked(MouseEvent e) {}
 	@Override public void mouseEntered(MouseEvent e) {}
 	@Override public void mouseExited(MouseEvent e) {}
 
-	public void slideDoorUp() {
-		
-	}//end slideDoorUp()
-	
-	public void slideDoorDown() {
-		
-	}//end slideDoorDown()
 }
 
 class Ball extends JComponent implements ActionListener {
@@ -112,33 +94,54 @@ class Ball extends JComponent implements ActionListener {
 	double deltat = 0.1;
 	
 	double x, y; //x and y position
-	double vx, vy;
+	double vx, vy; 
 	double oldx, oldy;
 	
-	boolean blue = false, red = false;
+	String color;
 	
-	public Ball( int x1, int y1 )
+	public Ball(String color)
+	{
+		if(color.equals("blue")) {
+			this.color = "blue";
+			x = Math.random() * 400 + 100;
+			y = Math.random() * 400 + 100;
+			vx = .7 * 100 - 50;
+			vy = .7 * 100 - 50;
+		}
+		else if(color.equals("red")) {
+			this.color = "red";
+			x = Math.random() * 400 + 100;
+			y = Math.random() * 400 + 100;
+			vx = .8 * 150 - 50;
+			vy = .8 * 150 - 50;
+		}
+	}//end Ball(Sting) constructor
+	
+	
+	public Ball( String color, boolean toTheRight )
 	{
 		timer = new Timer((int)(1000 * deltat), this);
 		timer.restart();
-		x = x1; y = y1; 
-		vx = Math.random() * 100 - 50;
-		vy = Math.random() * 100 - 50;
-	}
-	
-	public Ball()
-	{
-		x = Math.random() * 400 + 100;
-		y = Math.random() * 400 + 100;
-		vx = Math.random() * 100 - 50;
-		vy = Math.random() * 100 - 50;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		if(color.equals("blue") ) {
+			this.color = "blue";
+			vx = .7 * 100 - 50;
+			vy = .7 * 100 - 50;
+		}
+		else if(color.equals("red")) {
+			this.color = "red";
+			vx = .8 * 125 - 50;
+			vy = .8 * 125 - 50;
+		}
 		
-	}
+		if(toTheRight==true) {
+			x = Math.random() * (750-450) + 450;
+			y = Math.random() * (750-150) + 150;
+		}
+		else if(toTheRight==false) {
+			x = Math.random() * (350-25) + 25;
+			y = Math.random() * (750-150) + 150;
+		}
+	}//end Balls(String, boolean) constructor
 	
 	public void move( double deltat ) {
 		
@@ -149,17 +152,17 @@ class Ball extends JComponent implements ActionListener {
 		int intX = (int) x;
 		int intY = (int) y;
 		
-		if(new Rectangle(intX, intY, 6, 6).intersects(new Rectangle(400, 0, 1, 250))) {
+		if(new Rectangle(intX, intY, 8, 8).intersects(new Rectangle(400, 0, 1, 250))) {
 			vx *= -1;
 			vy *= -1;
 		}
-		else if(new Rectangle(intX, intY, 6, 6).intersects(new Rectangle(400, 400, 1, 400))) {
+		else if(new Rectangle(intX, intY, 8, 8).intersects(new Rectangle(400, 400, 1, 400))) {
 			
 			vx *= -1;				
 			vy *= -1;
 			
 		}
-		else if(new Rectangle(intX, intY, 6, 6).intersects(new Rectangle(400, 250, 1, 150))) {
+		else if(new Rectangle(intX, intY, 8, 8).intersects(new Rectangle(400, 250, 1, 150))) {
 			if(GamePanel.doorIsClosed) {
 				vx *= -1;
 				vy *= -1;
@@ -168,22 +171,22 @@ class Ball extends JComponent implements ActionListener {
 		
 		if ( x<0 ) { vx *= -1; }
 		if ( y<0 ) { vy *= -1; }
-		if ( x>800 ) { vx *= -1; }
-		if ( y>600 ) { vy *= -1; }
+		if ( x>794 ) { vx *= -1; }
+		if ( y>670 ) { vy *= -1; }
 		
 	}//end move()
-
 	
 	public void drawBlue( Graphics g ) {	
-		blue = true;
 		g.setColor( Color.BLUE );
-		g.fillOval( (int)(x-2), (int)(y-2), 6, 6 );
+		g.fillOval( (int)(x-2), (int)(y-2), 8, 8 );
 	}
 	
 	public void drawRed( Graphics g ) {
-		red = true;
 		g.setColor( Color.RED );
-		g.fillOval( (int)(x-2), (int)(y-2), 6, 6 );
+		g.fillOval( (int)(x-2), (int)(y-2), 8, 8 );
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) { }
 }//end Ball class
 

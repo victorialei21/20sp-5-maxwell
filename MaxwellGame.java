@@ -25,7 +25,8 @@ public class MaxwellGame extends JFrame {
 		gamePanel = new GamePanel();
 		add(gamePanel, BorderLayout.CENTER);
 		
-	    setSize( 800, 800 ); 
+	    setSize( 800, 800 );
+	    setResizable(false);
 	    setVisible( true ); 
 	    
 	    int resolution = Toolkit.getDefaultToolkit().getScreenResolution();
