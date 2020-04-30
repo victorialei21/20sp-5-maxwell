@@ -168,7 +168,6 @@ class Ball extends JComponent implements ActionListener {
 		}
 	}//end Ball(Sting) constructor
 	
-	
 	public Ball( String color, boolean toTheRight )
 	{
 		timer = new Timer((int)(1000 * deltat), this);
