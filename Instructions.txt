@@ -1,0 +1,7 @@
+Welcome to Maxwell's Demon! 
+
+In order to start the program, you will need MaxwellGame.java, MenuPanel.java, and GamePanel.java, as each play an important role in setting up the game. To run it, you only need to run MaxwellGame.java, since it contains main(). 
+
+Both the left and right chambers start off empty in the beginning. To start play, you must press the "Add More Particles" button, which will add a blue and a red particle to each side of the screen, which totals to four particles. The goal of the game is to separate the particles based on speed/color, so all blue/slow-moving particles should end up in the left chamber while all red/fast-moving particles should end up in the right chamber. To allow particles to move from one side to the other, simply press your mouse and the neon green door will open. To close the door again, release your mouse. The two displays at the top of each side show the temperature of each chamber, which is measured in degrees Maximus.
+
+Enjoy the game!
