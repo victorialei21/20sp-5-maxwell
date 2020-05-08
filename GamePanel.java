@@ -129,10 +129,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener {
 		g.setColor(Color.BLACK);
 		g.drawString(Integer.toString(tempLeft) + " degrees Maximus", 95, 40);
 		g.drawString(Integer.toString(tempRight)+ " degrees Maximus", 510, 40);
-
-		if(redRightBalls == rightBalls) {
-			System.out.println("ah!");
-		}
 		
 	}//end drawTemperature()
 	
